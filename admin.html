@@ -3,342 +3,294 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مضيف أهل العباء - البلاد القديم | بوابة الأخبار والفعاليات</title>
+  <title>لوحة تحكم الإدارة | مضيف أهل العباء - البلاد القديم</title>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #0f3d2e;
-      --primary-light: #185a44;
       --gold: #c89d3c;
-      --gold-light: #e4bf6a;
-      --bg: #f6f4ef;
+      --bg: #f4f2ed;
       --card: #ffffff;
-      --text: #1e2923;
-      --muted: #5c6b63;
-      --border: #e2ddd2;
+      --border: #dcd6c8;
+      --danger: #b91c1c;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Tajawal', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
+      background: var(--bg);
+      color: #1f2933;
+      line-height: 1.6;
     }
 
-    /* أنيميشن الظهور العام */
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     header {
-      background: linear-gradient(135deg, var(--primary) 0%, #08241b 100%);
+      background: var(--primary);
       color: #fff;
+      padding: 1.2rem 5%;
       border-bottom: 4px solid var(--gold);
-      padding: 1.5rem 5%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      animation: fadeIn 0.8s ease-out;
-    }
-    .header-container {
-      max-width: 1200px;
-      margin: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
+      animation: fadeIn 0.6s ease-out;
     }
-    .brand h1 {
+    header h1 {
       font-family: 'Amiri', serif;
-      font-size: 2rem;
-      color: var(--gold-light);
-    }
-    .brand p {
-      font-size: 0.95rem;
-      color: #d1ddd7;
+      color: #e4bf6a;
+      font-size: 1.7rem;
     }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.65rem 1.3rem;
+      padding: 0.65rem 1.2rem;
       border-radius: 8px;
+      border: none;
       font-family: inherit;
       font-weight: 700;
-      font-size: 0.95rem;
       cursor: pointer;
       text-decoration: none;
-      border: none;
-      transition: all 0.3s ease;
-    }
-    .btn-gold {
-      background: var(--gold);
-      color: #08241b;
-    }
-    .btn-gold:hover {
-      background: var(--gold-light);
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(200, 157, 60, 0.4);
-    }
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      padding: 0.45rem 0.9rem;
-      font-size: 0.85rem;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-    }
-    .btn-outline:hover {
-      background: var(--primary);
-      color: #fff;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 5%;
-      animation: fadeIn 1s ease-out;
-    }
-    .toolbar {
-      background: var(--card);
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-between;
+      display: inline-flex;
       align-items: center;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      gap: 0.45rem;
+      font-size: 0.92rem;
+      transition: all 0.25s ease;
     }
-    .search-box {
-      flex: 1;
-      min-width: 240px;
-      padding: 0.65rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.95ln;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    .search-box:focus {
-      border-color: var(--gold);
-    }
-    .filters {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      cursor: pointer;
-      font-family: inherit;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    .filter-btn.active, .filter-btn:hover {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-      transform: scale(1.05);
-    }
-    .news-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-      gap: 1.5rem;
-    }
-    
-    /* أنيميشن دخول وخروج بطاقات الأخبار */
-    .news-card {
-      background: var(--card);
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-      display: flex;
-      flex-direction: column;
-      animation: cardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-gold { background: var(--gold); color: #08241b; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-light { background: #e5e7eb; color: #111827; }
 
-    @keyframes cardEnter {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .news-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 25px rgba(15, 61, 46, 0.12);
-    }
-
-    .news-img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      background: #e9e4d8;
-      transition: transform 0.5s ease;
-    }
-    .news-card:hover .news-img {
-      transform: scale(1.04);
-    }
-    .news-body {
-      padding: 1.3rem;
-      flex: 1;
+    .login-wrapper {
+      min-height: 80vh;
       display: flex;
-      flex-direction: column;
-    }
-    .news-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-bottom: 0.6rem;
-    }
-    .badge {
-      background: #e6f0ec;
-      color: var(--primary);
-      padding: 0.2rem 0.7rem;
-      border-radius: 6px;
-      font-weight: 700;
-    }
-    .news-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 0.6rem;
-    }
-    .news-excerpt {
-      color: var(--muted);
-      font-size: 0.95rem;
-      margin-bottom: 1.2rem;
-      flex: 1;
-    }
-    .news-actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.5rem;
-      border-top: 1px solid var(--border);
-      padding-top: 0.9rem;
-    }
-
-    /* Modal مع أنيميشن سلس */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0);
-      z-index: 1000;
       align-items: center;
       justify-content: center;
       padding: 1rem;
-      transition: background 0.4s ease;
+      animation: fadeIn 0.8s ease-out;
     }
-    .modal.open {
-      display: flex;
-      background: rgba(0,0,0,0.65);
-    }
-    .modal-content {
-      background: #fff;
-      max-width: 700px;
+    .login-box {
+      background: var(--card);
+      padding: 2.5rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      max-width: 400px;
       width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 16px;
-      padding: 2rem;
-      position: relative;
-      transform: scale(0.8) translateY(30px);
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .modal.open .modal-content {
-      transform: scale(1) translateY(0);
-      opacity: 1;
-    }
-    .close-modal {
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-      background: #eee;
-      border: none;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .close-modal:hover {
-      background: var(--danger);
-      color: #fff;
-    }
-    footer {
       text-align: center;
-      padding: 2rem;
-      margin-top: 4rem;
-      background: var(--primary);
-      color: #d1ddd7;
-      border-top: 3px solid var(--gold);
+    }
+    .login-box h2 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .login-box p {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      margin-top: 0.35rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+    }
+    .form-group {
+      margin-bottom: 1.1rem;
+      text-align: right;
+    }
+    label {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #374151;
+    }
+    .error-msg {
+      color: var(--danger);
+      font-size: 0.88rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    .dashboard {
+      display: none;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 5%;
+      animation: fadeIn 0.8s ease-out;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 850px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--card);
+      padding: 1.6rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .panel h3 {
+      color: var(--primary);
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+    .file-drop {
+      border: 2px dashed var(--gold);
+      background: #fdfbf6;
+      padding: 1.2rem;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .cloud-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.8rem;
+    }
+    
+    /* أنيميشن عناصر قائمة الأدمن */
+    .admin-news-item {
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeIn 0.4s ease-out forwards;
+      transition: background 0.2s;
+    }
+    .admin-news-item:hover {
+      background: #faf8f5;
+    }
+    .admin-news-item h4 {
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+    .admin-news-item small {
+      color: #6b7280;
+    }
+    .item-actions {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="header-container">
-      <div class="brand">
-        <h1>مضيف أهل العباء - البلاد القديم</h1>
-        <p>البوابة الإعلامية الرسمية (تزامن سحابي فوري)</p>
-      </div>
-      <a href="admin.html" class="btn btn-gold">🔐 دخول الإدارة</a>
+    <h1>لوحة إدارة مضيف أهل العباء - البلاد القديم</h1>
+    <div style="display:flex; gap:0.6rem;">
+      <a href="index.html" class="btn btn-gold">🌐 عرض الموقع</a>
+      <button id="logoutBtn" class="btn btn-danger" style="display:none;" onclick="logoutAdmin()">تسجيل خروج</button>
     </div>
   </header>
 
-  <main class="container">
-    <div class="toolbar">
-      <input type="text" id="searchInput" class="search-box" placeholder="ابحث في أخبار المضيف..." />
-      <div class="filters" id="categoryFilters">
-        <button class="filter-btn active" data-cat="الكل">الكل</button>
-        <button class="filter-btn" data-cat="فعاليات ومناسبات">فعاليات ومناسبات</button>
-        <button class="filter-btn" data-cat="إعلانات">إعلانات</button>
-        <button class="filter-btn" data-cat="خدمات المضيف">خدمات المضيف</button>
-      </div>
+  <section class="login-wrapper" id="loginSection">
+    <div class="login-box">
+      <h2>تسجيل دخول الأدمن</h2>
+      <p>يرجى إدخال الرقم السري (2002)</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="adminPassword">الرقم السري:</label>
+          <input type="password" id="adminPassword" placeholder="أدخل الرقم السري..." required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">دخول لوحة التحكم</button>
+        <p class="error-msg" id="loginError">الرقم السري غير صحيح! حاول مرة أخرى.</p>
+      </form>
     </div>
+  </section>
 
-    <div class="news-grid" id="publicNewsGrid">
-      <p style="grid-column:1/-1; text-align:center; padding:2rem; color:#666;">⏳ جاري جلب الأخبار من سحابة Google...</p>
+  <main class="dashboard" id="dashboardSection">
+    <div class="grid-2">
+      <div>
+        <div class="panel">
+          <h3>☁️ إدارة ملفات السحابة (استيراد وتصدير)</h3>
+          <div class="file-drop">
+            <p style="margin-bottom:0.6rem; font-weight:600;">رفع خبر من ملف (.txt أو .json) ونشره على السحابة مباشرة:</p>
+            <input type="file" id="importFileInput" accept=".txt,.json" />
+            <small style="display:block; margin-top:0.5rem; color:#6b7280;">
+              للملف النصي (.txt): السطر الأول هو العنوان والباقي التفاصيل.
+            </small>
+          </div>
+          
+          <div class="cloud-actions">
+            <button type="button" class="btn btn-gold" onclick="exportCloudNewsJSON()">💾 تنزيل نسخة احتياطية (JSON)</button>
+            <button type="button" class="btn btn-light" onclick="refreshCloudList()">🔄 تحديث القائمة</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 id="formHeading">✍️ كتابة خبر جديد ونشره على سحابة Google</h3>
+          <form id="newsForm">
+            <input type="hidden" id="editNewsId" />
+            
+            <div class="form-group">
+              <label for="newsTitle">عنوان الخبر *</label>
+              <input type="text" id="newsTitle" placeholder="مثال: إقامة مجلس عزاء في مضيف أهل العباء..." required />
+            </div>
+
+            <div class="form-group">
+              <label for="newsCategory">التصنيف *</label>
+              <select id="newsCategory">
+                <option value="فعاليات ومناسبات">فعاليات ومناسبات</option>
+                <option value="إعلانات">إعلانات</option>
+                <option value="خدمات المضيف">خدمات المضيف</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="newsDate">تاريخ الخبر *</label>
+              <input type="date" id="newsDate" required />
+            </div>
+
+            <div class="form-group">
+              <label for="newsImageFile">صورة الخبر (رفع من الجهاز - اختياري)</label>
+              <input type="file" id="newsImageFile" accept="image/*" />
+            </div>
+
+            <div class="form-group">
+              <label for="newsContent">نص وتفاصيل الخبر *</label>
+              <textarea id="newsContent" rows="6" placeholder="اكتب تفاصيل الخبر هنا..." required></textarea>
+            </div>
+
+            <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
+              <button type="submit" class="btn btn-primary" id="saveNewsBtn">☁️ نشر الخبر على سحابة Google</button>
+              <button type="button" class="btn btn-light" id="cancelEditBtn" style="display:none;" onclick="resetNewsForm()">إلغاء التعديل</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <h3>📰 الأخبار المحفوظة في سحابة Google (<span id="newsCount">0</span>)</h3>
+          <div id="adminNewsList">جاري جلب الأخبار من السحابة...</div>
+        </div>
+      </div>
     </div>
   </main>
-
-  <div class="modal" id="articleModal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeArticleModal()">✕</button>
-      <img id="modalImg" src="" alt="" style="width:100%; max-height:320px; object-fit:cover; border-radius:10px; margin-bottom:1rem; display:none;">
-      <div class="news-meta">
-        <span class="badge" id="modalCategory"></span>
-        <span id="modalDate"></span>
-      </div>
-      <h2 id="modalTitle" style="color:var(--primary); margin-bottom:1rem;"></h2>
-      <div id="modalBody" style="white-space:pre-line; line-height:1.9; color:#222;"></div>
-      <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border);">
-        <button id="modalDownloadBtn" class="btn btn-outline">📥 تحميل الخبر كملف نصي (.txt)</button>
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    <p>© جميع الحقوق محفوظة - مضيف أهل العباء (البلاد القديم)</p>
-  </footer>
 
   <script type="module" src="script.js"></script>
 </body>
