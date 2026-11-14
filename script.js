@@ -1,46 +1,53 @@
-// الرقم السري للأدمن
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  addDoc, 
+  doc, 
+  updateDoc, 
+  deleteDoc, 
+  query, 
+  orderBy 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// ضع هنا معلومات مشروعك الخاص في Firebase
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const NEWS_COLLECTION = "news";
+
 const ADMIN_PASSCODE = "2002";
-const STORAGE_KEY = "ahl_alaba_bilaad_news";
 const AUTH_KEY = "ahl_alaba_admin_logged_in";
 
-// أخبار افتراضية عند فتح الموقع لأول مرة
-const defaultNews = [
-  {
-    id: "1",
-    title: "انطلاق برنامج الضيافة الموسمية في مضيف أهل العباء - البلاد القديم",
-    category: "خدمات المضيف",
-    date: "2026-11-14",
-    image: "",
-    content: "يعلن مضيف أهل العباء في البلاد القديم عن بدء استقبال الزوار والمشاركين في برنامج الضيافة الموسمية، سائلين المولى عز وجل أن يتقبل من الجميع صالح الأعمال."
-  },
-  {
-    id: "2",
-    title: "دعوة لحضور الأمسية الثقافية والإنشادية",
-    category: "فعاليات ومناسبات",
-    date: "2026-11-12",
-    image: "",
-    content: "يسر إدارة مضيف أهل العباء بالبلاد القديم دعوتكم لحضور الأمسية الثقافية والإنشادية مساء يوم الخميس القادم تمام الساعة الثامنة مساءً. حضوركم يشرفنا."
+// جلب جميع الأخبار من سحابة جوجل
+async function fetchNewsFromCloud() {
+  try {
+    const q = query(collection(db, NEWS_COLLECTION), orderBy("date", "desc"));
+    const querySnapshot = await getDocs(q);
+    const newsList = [];
+    querySnapshot.forEach((docSnap) => {
+      newsList.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    return newsList;
+  } catch (error) {
+    console.error("خطأ في جلب الأخبار:", error);
+    return [];
   }
-];
-
-// جلب الأخبار من التخزين المحلي
-function getNews() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultNews));
-    return defaultNews;
-  }
-  return JSON.parse(stored);
-}
-
-// حفظ الأخبار في التخزين المحلي
-function saveNews(newsArray) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(newsArray));
 }
 
 // تحميل خبر واحد كملف نصي (.txt)
-function downloadSingleNewsTxt(id) {
-  const news = getNews().find(item => item.id === id);
+window.downloadSingleNewsTxt = async function(id) {
+  const newsList = await fetchNewsFromCloud();
+  const news = newsList.find(item => item.id === id);
   if (!news) return;
 
   const fileContent = `${news.title}\nالتصنيف: ${news.category} | التاريخ: ${news.date}\n----------------------------------------\n\n${news.content}`;
@@ -52,27 +59,32 @@ function downloadSingleNewsTxt(id) {
   a.download = `${news.title.slice(0, 25)}.txt`;
   a.click();
   URL.revokeObjectURL(url);
-}
+};
 
 /* =========================================================
-   1. أكواد الصفحة الرئيسية (index.html)
+   الصفحة الرئيسية (index.html)
 ========================================================= */
 const publicNewsGrid = document.getElementById("publicNewsGrid");
 
 if (publicNewsGrid) {
   let currentCategory = "الكل";
   let searchQuery = "";
+  let cachedNews = [];
+
+  async function initPublicPage() {
+    cachedNews = await fetchNewsFromCloud();
+    renderPublicNews();
+  }
 
   function renderPublicNews() {
-    const allNews = getNews();
-    const filtered = allNews.filter(item => {
+    const filtered = cachedNews.filter(item => {
       const matchCat = currentCategory === "الكل" || item.category === currentCategory;
-      const matchSearch = item.title.includes(searchQuery) || item.content.includes(searchQuery);
+      const matchSearch = (item.title && item.title.includes(searchQuery)) || (item.content && item.content.includes(searchQuery));
       return matchCat && matchSearch;
     });
 
     if (filtered.length === 0) {
-      publicNewsGrid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:2rem; color:#666;">لا توجد أخبار مطابقة لبحثك حالياً.</p>`;
+      publicNewsGrid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:2rem; color:#666;">لا توجد أخبار مطابقة حالياً.</p>`;
       return;
     }
 
@@ -95,7 +107,6 @@ if (publicNewsGrid) {
     `).join("");
   }
 
-  // البحث والتصفية
   document.getElementById("searchInput").addEventListener("input", (e) => {
     searchQuery = e.target.value.trim();
     renderPublicNews();
@@ -110,9 +121,8 @@ if (publicNewsGrid) {
     });
   });
 
-  // نافذة قراءة الخبر
   window.openArticleModal = function(id) {
-    const item = getNews().find(n => n.id === id);
+    const item = cachedNews.find(n => n.id === id);
     if (!item) return;
 
     const modalImg = document.getElementById("modalImg");
@@ -136,11 +146,11 @@ if (publicNewsGrid) {
     document.getElementById("articleModal").classList.remove("open");
   };
 
-  renderPublicNews();
+  initPublicPage();
 }
 
 /* =========================================================
-   2. أكواد صفحة الإدارة (admin.html)
+   صفحة الإدارة (admin.html)
 ========================================================= */
 const loginForm = document.getElementById("loginForm");
 
@@ -150,10 +160,8 @@ if (loginForm) {
   const logoutBtn = document.getElementById("logoutBtn");
   const newsDateInput = document.getElementById("newsDate");
 
-  // تعيين تاريخ اليوم تلقائياً
   newsDateInput.valueAsDate = new Date();
 
-  // التحقق من حالة تسجيل الدخول
   function checkAdminAuth() {
     if (sessionStorage.getItem(AUTH_KEY) === "true") {
       loginSection.style.display = "none";
@@ -167,7 +175,6 @@ if (loginForm) {
     }
   }
 
-  // تسجيل الدخول بالرقم السري 2002
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const enteredPass = document.getElementById("adminPassword").value.trim();
@@ -180,17 +187,15 @@ if (loginForm) {
     }
   });
 
-  // تسجيل الخروج
   window.logoutAdmin = function() {
     sessionStorage.removeItem(AUTH_KEY);
     document.getElementById("adminPassword").value = "";
     checkAdminAuth();
   };
 
-  // عرض الأخبار في لوحة الأدمن
-  function renderAdminNewsList() {
+  async function renderAdminNewsList() {
     const listContainer = document.getElementById("adminNewsList");
-    const news = getNews();
+    const news = await fetchNewsFromCloud();
     document.getElementById("newsCount").textContent = news.length;
 
     if (news.length === 0) {
@@ -206,15 +211,14 @@ if (loginForm) {
         </div>
         <div class="item-actions">
           <button class="btn btn-light" onclick="downloadSingleNewsTxt('${item.id}')">📥 ملف</button>
-          <button class="btn btn-gold" onclick="editNews('${item.id}')">✏️ تعديل</button>
-          <button class="btn btn-danger" onclick="deleteNews('${item.id}')">🗑️ حذف</button>
+          <button class="btn btn-gold" onclick="prepareEditNews('${item.id}')">✏️ تعديل</button>
+          <button class="btn btn-danger" onclick="deleteCloudNews('${item.id}')">🗑️ حذف</button>
         </div>
       </div>
     `).join("");
   }
 
-  // حفظ أو تعديل خبر من النموذج
-  document.getElementById("newsForm").addEventListener("submit", (e) => {
+  document.getElementById("newsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const id = document.getElementById("editNewsId").value;
     const title = document.getElementById("newsTitle").value.trim();
@@ -223,54 +227,45 @@ if (loginForm) {
     const content = document.getElementById("newsContent").value.trim();
     const fileInput = document.getElementById("newsImageFile");
 
-    const processSave = (imageDataUrl) => {
-      let allNews = getNews();
-      if (id) {
-        // تعديل خبر موجود
-        allNews = allNews.map(item => {
-          if (item.id === id) {
-            return {
-              ...item,
-              title,
-              category,
-              date,
-              content,
-              image: imageDataUrl !== null ? imageDataUrl : item.image
-            };
-          }
-          return item;
-        });
-      } else {
-        // إضافة خبر جديد
-        const newEntry = {
-          id: Date.now().toString(),
-          title,
-          category,
-          date,
-          content,
-          image: imageDataUrl || ""
-        };
-        allNews.unshift(newEntry);
+    const saveDataToCloud = async (imageDataUrl) => {
+      try {
+        if (id) {
+          const docRef = doc(db, NEWS_COLLECTION, id);
+          const updateData = { title, category, date, content };
+          if (imageDataUrl !== null) updateData.image = imageDataUrl;
+          await updateDoc(docRef, updateData);
+          alert("تم تحديث الخبر بنجاح على سحابة Google!");
+        } else {
+          await addDoc(collection(db, NEWS_COLLECTION), {
+            title,
+            category,
+            date,
+            content,
+            image: imageDataUrl || "",
+            createdAt: Date.now()
+          });
+          alert("تم نشر الخبر بنجاح على سحابة Google لجميع الأجهزة!");
+        }
+        resetNewsForm();
+        renderAdminNewsList();
+      } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الحفظ.");
       }
-      saveNews(allNews);
-      resetNewsForm();
-      renderAdminNewsList();
-      alert("تم حفظ ونشر الخبر بنجاح!");
     };
 
-    // قراءة الصورة إن وجدت
     if (fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
-      reader.onload = (event) => processSave(event.target.result);
+      reader.onload = (event) => saveDataToCloud(event.target.result);
       reader.readAsDataURL(fileInput.files[0]);
     } else {
-      processSave(null);
+      saveDataToCloud(id ? null : "");
     }
   });
 
-  // تعبئة النموذج لتعديل خبر
-  window.editNews = function(id) {
-    const item = getNews().find(n => n.id === id);
+  window.prepareEditNews = async function(id) {
+    const news = await fetchNewsFromCloud();
+    const item = news.find(n => n.id === id);
     if (!item) return;
 
     document.getElementById("editNewsId").value = item.id;
@@ -279,101 +274,69 @@ if (loginForm) {
     document.getElementById("newsDate").value = item.date;
     document.getElementById("newsContent").value = item.content;
 
-    document.getElementById("formHeading").textContent = "✏️ تعديل الخبر";
+    document.getElementById("formHeading").textContent = "✏️ تعديل الخبر سحابياً";
     document.getElementById("saveNewsBtn").textContent = "حفظ التعديلات";
     document.getElementById("cancelEditBtn").style.display = "inline-flex";
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // إعادة تعيين النموذج
   window.resetNewsForm = function() {
     document.getElementById("newsForm").reset();
     document.getElementById("editNewsId").value = "";
     document.getElementById("newsDate").valueAsDate = new Date();
-    document.getElementById("formHeading").textContent = "✍️ كتابة خبر جديد";
-    document.getElementById("saveNewsBtn").textContent = "نشر الخبر الآن";
+    document.getElementById("formHeading").textContent = "✍️ كتابة خبر جديد سحابياً";
+    document.getElementById("saveNewsBtn").textContent = "نشر الخبر على سحابة Google";
     document.getElementById("cancelEditBtn").style.display = "none";
   };
 
-  // حذف خبر
-  window.deleteNews = function(id) {
-    if (!confirm("هل أنت متأكد من حذف هذا الخبر؟")) return;
-    const filtered = getNews().filter(n => n.id !== id);
-    saveNews(filtered);
-    renderAdminNewsList();
+  window.deleteCloudNews = async function(id) {
+    if (!confirm("هل أنت متأكد من حذف هذا الخبر من السحابة؟")) return;
+    try {
+      await deleteDoc(doc(db, NEWS_COLLECTION, id));
+      renderAdminNewsList();
+      alert("تم حذف الخبر بنجاح.");
+    } catch (err) {
+      console.error(err);
+      alert("فشل الحذف.");
+    }
   };
 
-  // استيراد وتنزيل خبر من ملف (.txt أو .json)
+  // رفع خبر من ملف نصي (.txt)
   document.getElementById("importFileInput").addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const text = event.target.result;
-      const allNews = getNews();
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+      if (lines.length === 0) {
+        alert("الملف فارغ!");
+        return;
+      }
+      const title = lines[0].trim();
+      const content = lines.slice(1).join("\n").trim() || title;
       const today = new Date().toISOString().split("T")[0];
 
-      if (file.name.endsWith(".json")) {
-        try {
-          const parsed = JSON.parse(text);
-          if (Array.isArray(parsed)) {
-            saveNews([...parsed, ...allNews]);
-            alert(`تم استيراد ${parsed.length} خبر بنجاح!`);
-          } else if (parsed.title && parsed.content) {
-            allNews.unshift({
-              id: Date.now().toString(),
-              title: parsed.title,
-              category: parsed.category || "فعاليات ومناسبات",
-              date: parsed.date || today,
-              content: parsed.content,
-              image: parsed.image || ""
-            });
-            saveNews(allNews);
-            alert("تم استيراد الخبر من ملف JSON بنجاح!");
-          }
-        } catch {
-          alert("ملف JSON غير صالح.");
-        }
-      } else {
-        // معالجة الملف النصي (.txt): السطر الأول عنوان والباقي محتوى
-        const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-        if (lines.length === 0) {
-          alert("الملف فارغ!");
-          return;
-        }
-        const title = lines[0].trim();
-        const content = lines.slice(1).join("\n").trim() || title;
-
-        allNews.unshift({
-          id: Date.now().toString(),
+      try {
+        await addDoc(collection(db, NEWS_COLLECTION), {
           title: title,
           category: "إعلانات",
           date: today,
           content: content,
-          image: ""
+          image: "",
+          createdAt: Date.now()
         });
-        saveNews(allNews);
-        alert("تم رفع ونشر الخبر من الملف النصي بنجاح!");
+        alert("تم استيراد ونشر الخبر من الملف النصي سحابياً بنجاح!");
+        renderAdminNewsList();
+      } catch (err) {
+        console.error(err);
+        alert("خطأ أثناء استيراد الملف.");
       }
-
-      renderAdminNewsList();
       e.target.value = "";
     };
     reader.readAsText(file, "UTF-8");
   });
-
-  // تصدير جميع الأخبار كنسخة احتياطية JSON
-  window.exportAllNewsJSON = function() {
-    const dataStr = JSON.stringify(getNews(), null, 2);
-    const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `أخبار_مضيف_أهل_العباء_${new Date().toISOString().split("T")[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   checkAdminAuth();
 }
