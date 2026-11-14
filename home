@@ -77,6 +77,8 @@
       color: var(--primary);
       padding: 0.45rem 0.9rem;
       font-size: 0.85rem;
+      cursor: pointer;
+      border-radius: 6px;
     }
     .btn-outline:hover {
       background: var(--primary);
@@ -197,7 +199,6 @@
       border-top: 1px solid var(--border);
       padding-top: 0.9rem;
     }
-    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -247,7 +248,7 @@
     <div class="header-container">
       <div class="brand">
         <h1>مضيف أهل العباء - البلاد القديم</h1>
-        <p>المركز الإعلامي لنشر الأخبار والفعاليات الدينية والاجتماعية</p>
+        <p>المركز الإعلامي لنشر الأخبار والفعاليات (حفظ سحابي متزامن)</p>
       </div>
       <a href="admin.html" class="btn btn-gold">🔐 دخول الإدارة</a>
     </div>
@@ -264,10 +265,11 @@
       </div>
     </div>
 
-    <div class="news-grid" id="publicNewsGrid"></div>
+    <div class="news-grid" id="publicNewsGrid">
+      <p style="grid-column:1/-1; text-align:center; color:#666;">جاري تحميل الأخبار من سحابة Google...</p>
+    </div>
   </main>
 
-  <!-- نافذة قراءة الخبر كاملاً -->
   <div class="modal" id="articleModal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeArticleModal()">✕</button>
@@ -288,6 +290,7 @@
     <p>© جميع الحقوق محفوظة - مضيف أهل العباء (البلاد القديم)</p>
   </footer>
 
-  <script src="script.js"></script>
+  <!-- مكتبات Firebase السحابية -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>
