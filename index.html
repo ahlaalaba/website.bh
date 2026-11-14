@@ -1,212 +1,293 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مضيف أهل العباء</title>
-<style>
-*{box-sizing:border-box}
-body{
- margin:0;font-family:Tahoma,Arial;
- background:#f5f1e8;color:#26352c;
-}
-header{
- background:#123d2b;color:#fff;
- padding:25px;text-align:center;
- border-bottom:4px solid #c7a34b;
-}
-header h1{color:#e7c66d;margin:5px}
-nav{
- background:#194c36;padding:14px;
- text-align:center;
-}
-nav a{
- color:white;text-decoration:none;
- margin:12px;font-weight:bold;
-}
-.container{max-width:950px;margin:25px auto;padding:15px}
-.card{
- background:white;padding:22px;
- border-radius:14px;margin-bottom:20px;
- box-shadow:0 3px 12px #0001;
-}
-h2{color:#185238}
-button{
- background:#185238;color:white;
- border:0;padding:12px 20px;
- border-radius:8px;cursor:pointer;
- margin:5px;
-}
-button:hover{background:#c49b43}
-input,textarea{
- width:100%;padding:13px;margin:8px 0;
- border:1px solid #ccc;border-radius:8px;
- font-family:inherit;
-}
-textarea{min-height:100px}
-.news{
- border-right:4px solid #c49b43;
- padding:12px;margin:15px 0;
- background:#faf8f2;border-radius:5px;
-}
-.hidden{display:none}
-footer{
- text-align:center;background:#123d2b;
- color:white;padding:25px;margin-top:40px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مضيف أهل العباء - البلاد القديم | بوابة الأخبار والفعاليات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f3d2e;
+      --primary-light: #185a44;
+      --gold: #c89d3c;
+      --gold-light: #e4bf6a;
+      --bg: #f6f4ef;
+      --card: #ffffff;
+      --text: #1e2923;
+      --muted: #5c6b63;
+      --border: #e2ddd2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, #08241b 100%);
+      color: #fff;
+      border-bottom: 4px solid var(--gold);
+      padding: 1.5rem 5%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand h1 {
+      font-family: 'Amiri', serif;
+      font-size: 2rem;
+      color: var(--gold-light);
+    }
+    .brand p {
+      font-size: 0.95rem;
+      color: #d1ddd7;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.3rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: 0.25s;
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: #08241b;
+    }
+    .btn-gold:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
+    }
+    .btn-outline:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 5%;
+    }
+    .toolbar {
+      background: var(--card);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 240px;
+      padding: 0.65rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--card);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      transition: 0.3s;
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+    }
+    .news-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: #e9e4d8;
+    }
+    .news-body {
+      padding: 1.3rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .news-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+    .badge {
+      background: #e6f0ec;
+      color: var(--primary);
+      padding: 0.2rem 0.7rem;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+    .news-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.6rem;
+    }
+    .news-excerpt {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .news-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.9rem;
+    }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal.open { display: flex; }
+    .modal-content {
+      background: #fff;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 14px;
+      padding: 2rem;
+      position: relative;
+    }
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: #eee;
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 4rem;
+      background: var(--primary);
+      color: #d1ddd7;
+      border-top: 3px solid var(--gold);
+    }
+  </style>
 </head>
 <body>
 
-<header>
-<h1>مضيف أهل العباء</h1>
-<p>مرحباً بكم في الموقع الرسمي لمضيف أهل العباء</p>
-</header>
+  <header>
+    <div class="header-container">
+      <div class="brand">
+        <h1>مضيف أهل العباء - البلاد القديم</h1>
+        <p>المركز الإعلامي لنشر الأخبار والفعاليات الدينية والاجتماعية</p>
+      </div>
+      <a href="admin.html" class="btn btn-gold">🔐 دخول الإدارة</a>
+    </div>
+  </header>
 
-<nav>
-<a href="#home">الرئيسية</a>
-<a href="#news">الأخبار</a>
-<a href="#account">تسجيل الدخول</a>
-<a href="#admin">الأدمن</a>
-</nav>
+  <main class="container">
+    <div class="toolbar">
+      <input type="text" id="searchInput" class="search-box" placeholder="ابحث في أخبار المضيف..." />
+      <div class="filters" id="categoryFilters">
+        <button class="filter-btn active" data-cat="الكل">الكل</button>
+        <button class="filter-btn" data-cat="فعاليات ومناسبات">فعاليات ومناسبات</button>
+        <button class="filter-btn" data-cat="إعلانات">إعلانات</button>
+        <button class="filter-btn" data-cat="خدمات المضيف">خدمات المضيف</button>
+      </div>
+    </div>
 
-<div class="container">
+    <div class="news-grid" id="publicNewsGrid"></div>
+  </main>
 
-<section class="card" id="home">
-<h2>السلام عليكم ورحمة الله وبركاته</h2>
-<p>
-أهلاً وسهلاً بكم في موقع مضيف أهل العباء،
-مساحة للتواصل ونشر الأخبار والإعلانات
-والفعاليات الخاصة بالمضيف.
-</p>
-</section>
+  <!-- نافذة قراءة الخبر كاملاً -->
+  <div class="modal" id="articleModal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeArticleModal()">✕</button>
+      <img id="modalImg" src="" alt="" style="width:100%; max-height:320px; object-fit:cover; border-radius:10px; margin-bottom:1rem; display:none;">
+      <div class="news-meta">
+        <span class="badge" id="modalCategory"></span>
+        <span id="modalDate"></span>
+      </div>
+      <h2 id="modalTitle" style="color:var(--primary); margin-bottom:1rem;"></h2>
+      <div id="modalBody" style="white-space:pre-line; line-height:1.9; color:#222;"></div>
+      <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border);">
+        <button id="modalDownloadBtn" class="btn btn-outline">📥 تحميل الخبر كملف نصي (.txt)</button>
+      </div>
+    </div>
+  </div>
 
-<section class="card" id="news">
-<h2>📰 آخر الأخبار والإعلانات</h2>
-<div id="newsList">
-<p>لا توجد أخبار منشورة حالياً.</p>
-</div>
-</section>
+  <footer>
+    <p>© جميع الحقوق محفوظة - مضيف أهل العباء (البلاد القديم)</p>
+  </footer>
 
-<section class="card" id="account">
-<h2>🔐 تسجيل الدخول أو إنشاء حساب</h2>
-<input id="email" type="email"
-placeholder="البريد الإلكتروني">
-<input id="userPassword" type="password"
-placeholder="كلمة المرور">
-<button onclick="register()">إنشاء حساب</button>
-<button onclick="login()">تسجيل الدخول</button>
-<hr>
-<button onclick="location.href='/auth/google'">
-🌐 تسجيل الدخول باستخدام Google
-</button>
-<p id="accountMessage"></p>
-</section>
-
-<section class="card" id="admin">
-<h2>👑 دخول الإدارة</h2>
-<p>هذه المنطقة مخصصة لإدارة مضيف أهل العباء.</p>
-<input id="adminPassword" type="password"
-placeholder="أدخل كلمة مرور الإدارة">
-<button onclick="adminLogin()">دخول الأدمن</button>
-<p id="adminMessage"></p>
-
-<div id="adminPanel" class="hidden">
-<hr>
-<h2>لوحة تحكم الأدمن</h2>
-<h3>نشر خبر جديد</h3>
-<input id="newsTitle" placeholder="عنوان الخبر">
-<textarea id="newsContent"
-placeholder="اكتب تفاصيل الخبر هنا"></textarea>
-<button onclick="publishNews()">نشر الخبر</button>
-<p id="publishMessage"></p>
-</div>
-</section>
-
-</div>
-
-<footer>
-<p>مضيف أهل العباء © 2026</p>
-<p>جميع الحقوق محفوظة</p>
-</footer>
-
-<script>
-function register(){
- document.getElementById('accountMessage').innerText=
- 'يجب ربط الموقع بخادم لإنشاء الحسابات بشكل آمن.';
-}
-function login(){
- document.getElementById('accountMessage').innerText=
- 'يجب ربط الموقع بخادم لتسجيل الدخول.';
-}
-
-// التحقق من كلمة مرور الأدمن في الخادم
-async function adminLogin(){
- const password=document.getElementById('adminPassword').value;
- const message=document.getElementById('adminMessage');
-
- try{
-  const response=await fetch('/api/admin/login',{
-   method:'POST',
-   headers:{'Content-Type':'application/json'},
-   body:JSON.stringify({password})
-  });
-  if(response.ok){
-   document.getElementById('adminPanel').classList.remove('hidden');
-   message.innerText='تم تسجيل الدخول بنجاح';
-  }else{
-   message.innerText='كلمة المرور غير صحيحة';
-  }
- }catch(e){
-  message.innerText='خدمة الإدارة تحتاج إلى تشغيل الخادم.';
- }
-}
-
-// الأخبار في هذا المثال تحفظ محلياً للعرض التجريبي
-let news=JSON.parse(localStorage.getItem('news')||'[]');
-
-function showNews(){
- const list=document.getElementById('newsList');
- list.innerHTML='';
- if(!news.length){
-  list.innerHTML='<p>لا توجد أخبار منشورة حالياً.</p>';
-  return;
- }
- news.forEach((item,index)=>{
-  list.innerHTML+=`
-   <div class="news">
-    <h3>${escapeHTML(item.title)}</h3>
-    <p>${escapeHTML(item.content)}</p>
-    <button onclick="deleteNews(${index})">حذف</button>
-   </div>`;
- });
-}
-
-function escapeHTML(value){
- const div=document.createElement('div');
- div.textContent=value;
- return div.innerHTML;
-}
-
-function publishNews(){
- const title=document.getElementById('newsTitle').value.trim();
- const content=document.getElementById('newsContent').value.trim();
- if(!title||!content)return;
- news.unshift({title,content});
- localStorage.setItem('news',JSON.stringify(news));
- document.getElementById('newsTitle').value='';
- document.getElementById('newsContent').value='';
- document.getElementById('publishMessage').innerText='تمت إضافة الخبر للعرض التجريبي';
- showNews();
-}
-
-function deleteNews(index){
- news.splice(index,1);
- localStorage.setItem('news',JSON.stringify(news));
- showNews();
-}
-showNews();
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
