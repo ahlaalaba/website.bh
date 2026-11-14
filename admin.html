@@ -58,7 +58,6 @@
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-light { background: #e5e7eb; color: #111827; }
 
-    /* شاشة تسجيل الدخول */
     .login-wrapper {
       min-height: 80vh;
       display: flex;
@@ -110,7 +109,6 @@
       display: none;
     }
 
-    /* لوحة التحكم */
     .dashboard {
       display: none;
       max-width: 1200px;
@@ -187,11 +185,10 @@
     </div>
   </header>
 
-  <!-- شاشة تسجيل الدخول (الرقم السري 2002) -->
   <section class="login-wrapper" id="loginSection">
     <div class="login-box">
       <h2>تسجيل دخول الأدمن</h2>
-      <p>يرجى إدخال الرقم السري الخاص بإدارة المضيف</p>
+      <p>يرجى إدخال الرقم السري (2002)</p>
       <form id="loginForm">
         <div class="form-group">
           <label for="adminPassword">الرقم السري:</label>
@@ -203,30 +200,25 @@
     </div>
   </section>
 
-  <!-- لوحة التحكم السحابية -->
   <main class="dashboard" id="dashboardSection">
     <div class="grid-2">
-      
-      <!-- العمود الأيمن: إدارة الملفات وكتابة الأخبار -->
       <div>
-        <!-- قسم التعامل مع ملفات السحابة -->
         <div class="panel">
           <h3>☁️ إدارة ملفات السحابة (استيراد وتصدير)</h3>
           <div class="file-drop">
             <p style="margin-bottom:0.6rem; font-weight:600;">رفع خبر من ملف (.txt أو .json) ونشره على السحابة مباشرة:</p>
             <input type="file" id="importFileInput" accept=".txt,.json" />
             <small style="display:block; margin-top:0.5rem; color:#6b7280;">
-              للملف النصي (.txt): السطر الأول هو العنوان، وبقية السطور هي تفاصيل الخبر.
+              للملف النصي (.txt): السطر الأول هو العنوان، والباقي تفاصيل الخبر.
             </small>
           </div>
           
           <div class="cloud-actions">
-            <button type="button" class="btn btn-gold" onclick="exportCloudNewsJSON()">💾 تنزيل نسخة احتياطية من السحابة (JSON)</button>
+            <button type="button" class="btn btn-gold" onclick="exportCloudNewsJSON()">💾 تنزيل نسخة احتياطية (JSON)</button>
             <button type="button" class="btn btn-light" onclick="refreshCloudList()">🔄 تحديث القائمة</button>
           </div>
         </div>
 
-        <!-- نموذج كتابة أو تعديل خبر على السحابة -->
         <div class="panel">
           <h3 id="formHeading">✍️ كتابة خبر جديد ونشره على سحابة Google</h3>
           <form id="newsForm">
@@ -269,14 +261,12 @@
         </div>
       </div>
 
-      <!-- العمود الأيسر: قائمة الأخبار المحفوظة في السحابة -->
       <div>
         <div class="panel">
           <h3>📰 الأخبار المحفوظة في سحابة Google (<span id="newsCount">0</span>)</h3>
           <div id="adminNewsList">جاري جلب الأخبار من السحابة...</div>
         </div>
       </div>
-
     </div>
   </main>
 
