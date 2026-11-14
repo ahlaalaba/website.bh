@@ -28,7 +28,7 @@ const NEWS_COLLECTION = "news";
 const ADMIN_PASSCODE = "2002";
 const AUTH_KEY = "ahl_alaba_admin_logged_in";
 
-// جلب الأخبار من سحابة Google المتزامنة لجميع الأجهزة
+// جلب الأخبار من سحابة Google المتزامنة الدائمة
 async function fetchNewsFromCloud() {
   try {
     const q = query(collection(db, NEWS_COLLECTION), orderBy("date", "desc"));
@@ -226,7 +226,7 @@ if (loginForm) {
     `).join("");
   }
 
-  // نشر الخبر سحابياً وظهوره فوراً على جميع الأجهزة
+  // نشر الخبر سحابياً وتحديثه لجميع الأجهزة فوراً ودائماً
   document.getElementById("newsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const saveBtn = document.getElementById("saveNewsBtn");
@@ -257,7 +257,7 @@ if (loginForm) {
             image: imageDataUrl || "",
             createdAt: Date.now()
           });
-          alert("✅ تم نشر الخبر على سحابة Google وأصبح متاحاً فوراً لجميع الزوار على كافة الأجهزة!");
+          alert("✅ تم نشر الخبر على سحابة Google وأصبح متاحاً فوراً ودائماً لجميع الزوار على كافة الأجهزة!");
         }
         resetNewsForm();
         await renderAdminNewsList();
