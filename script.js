@@ -11,7 +11,7 @@ import {
   orderBy 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ⚠️ ضع هنا معلومات مشروعك الحقيقية من لوحة تحكم Firebase Console
+// ⚠️ استبدل هذه البيانات بمعلومات مشروعك الحقيقية من لوحة تحكم Firebase
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -28,7 +28,7 @@ const NEWS_COLLECTION = "news";
 const ADMIN_PASSCODE = "2002";
 const AUTH_KEY = "ahl_alaba_admin_logged_in";
 
-// جلب جميع الأخبار من سحابة Google مع الترتيب التلقائي
+// جلب الأخبار من سحابة Google
 async function fetchNewsFromCloud() {
   try {
     const q = query(collection(db, NEWS_COLLECTION), orderBy("date", "desc"));
@@ -44,7 +44,7 @@ async function fetchNewsFromCloud() {
   }
 }
 
-// تحميل خبر واحد كملف نصي (.txt)
+// تنزيل خبر واحد كملف نصي (.txt)
 window.downloadSingleNewsTxt = async function(id) {
   const newsList = await fetchNewsFromCloud();
   const news = newsList.find(item => item.id === id);
@@ -62,7 +62,7 @@ window.downloadSingleNewsTxt = async function(id) {
 };
 
 /* =========================================================
-   1. أكواد الصفحة الرئيسية (index.html) - عرض أخبار السحابة
+   الصفحة الرئيسية (index.html)
 ========================================================= */
 const publicNewsGrid = document.getElementById("publicNewsGrid");
 
@@ -151,7 +151,7 @@ if (publicNewsGrid) {
 }
 
 /* =========================================================
-   2. أكواد صفحة الإدارة (admin.html) - لوحة تحكم الأدمن
+   صفحة الإدارة (admin.html)
 ========================================================= */
 const loginForm = document.getElementById("loginForm");
 
@@ -176,7 +176,6 @@ if (loginForm) {
     }
   }
 
-  // تسجيل الدخول بالرقم السري 2002
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const enteredPass = document.getElementById("adminPassword").value.trim();
@@ -227,7 +226,7 @@ if (loginForm) {
     `).join("");
   }
 
-  // الضغط على زر نشر الخبر (ارسال إلى سحابة Google فوراً لظهر للجميع)
+  // نشر الخبر على سحابة Google لجميع الأجهزة
   document.getElementById("newsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const saveBtn = document.getElementById("saveNewsBtn");
@@ -264,7 +263,7 @@ if (loginForm) {
         await renderAdminNewsList();
       } catch (err) {
         console.error("خطأ النشر:", err);
-        alert("❌ فشل الاتصال بالسحابة! تحقق من إعدادات Firebase والإنترنت.");
+        alert("❌ فشل النشر على السحابة! تحقق من إعدادات Firebase واتصالك بالإنترنت.");
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = "☁️ نشر الخبر على سحابة Google";
@@ -318,7 +317,7 @@ if (loginForm) {
     }
   };
 
-  // رفع خبر من ملف نصي (.txt) أو بيانات (.json) ونشره سحابياً تلقائياً
+  // استيراد خبر من ملف ونشره سحابياً
   document.getElementById("importFileInput").addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -374,7 +373,7 @@ if (loginForm) {
     reader.readAsText(file, "UTF-8");
   });
 
-  // تنزيل نسخة احتياطية لجميع أخبار السحابة كملف JSON
+  // تصدير أخبار السحابة كملف احتياطي JSON
   window.exportCloudNewsJSON = async function() {
     const allNews = await fetchNewsFromCloud();
     if (allNews.length === 0) {
