@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مضيف أهل العباء</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Tahoma,Arial;
+ background:#f5f1e8;color:#26352c;
+}
+header{
+ background:#123d2b;color:#fff;
+ padding:25px;text-align:center;
+ border-bottom:4px solid #c7a34b;
+}
+header h1{color:#e7c66d;margin:5px}
+nav{
+ background:#194c36;padding:14px;
+ text-align:center;
+}
+nav a{
+ color:white;text-decoration:none;
+ margin:12px;font-weight:bold;
+}
+.container{max-width:950px;margin:25px auto;padding:15px}
+.card{
+ background:white;padding:22px;
+ border-radius:14px;margin-bottom:20px;
+ box-shadow:0 3px 12px #0001;
+}
+h2{color:#185238}
+button{
+ background:#185238;color:white;
+ border:0;padding:12px 20px;
+ border-radius:8px;cursor:pointer;
+ margin:5px;
+}
+button:hover{background:#c49b43}
+input,textarea{
+ width:100%;padding:13px;margin:8px 0;
+ border:1px solid #ccc;border-radius:8px;
+ font-family:inherit;
+}
+textarea{min-height:100px}
+.news{
+ border-right:4px solid #c49b43;
+ padding:12px;margin:15px 0;
+ background:#faf8f2;border-radius:5px;
+}
+.hidden{display:none}
+footer{
+ text-align:center;background:#123d2b;
+ color:white;padding:25px;margin-top:40px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>مضيف أهل العباء</h1>
+<p>مرحباً بكم في الموقع الرسمي لمضيف أهل العباء</p>
+</header>
+
+<nav>
+<a href="#home">الرئيسية</a>
+<a href="#news">الأخبار</a>
+<a href="#account">تسجيل الدخول</a>
+<a href="#admin">الأدمن</a>
+</nav>
+
+<div class="container">
+
+<section class="card" id="home">
+<h2>السلام عليكم ورحمة الله وبركاته</h2>
+<p>
+أهلاً وسهلاً بكم في موقع مضيف أهل العباء،
+مساحة للتواصل ونشر الأخبار والإعلانات
+والفعاليات الخاصة بالمضيف.
+</p>
+</section>
+
+<section class="card" id="news">
+<h2>📰 آخر الأخبار والإعلانات</h2>
+<div id="newsList">
+<p>لا توجد أخبار منشورة حالياً.</p>
+</div>
+</section>
+
+<section class="card" id="account">
+<h2>🔐 تسجيل الدخول أو إنشاء حساب</h2>
+<input id="email" type="email"
+placeholder="البريد الإلكتروني">
+<input id="userPassword" type="password"
+placeholder="كلمة المرور">
+<button onclick="register()">إنشاء حساب</button>
+<button onclick="login()">تسجيل الدخول</button>
+<hr>
+<button onclick="location.href='/auth/google'">
+🌐 تسجيل الدخول باستخدام Google
+</button>
+<p id="accountMessage"></p>
+</section>
+
+<section class="card" id="admin">
+<h2>👑 دخول الإدارة</h2>
+<p>هذه المنطقة مخصصة لإدارة مضيف أهل العباء.</p>
+<input id="adminPassword" type="password"
+placeholder="أدخل كلمة مرور الإدارة">
+<button onclick="adminLogin()">دخول الأدمن</button>
+<p id="adminMessage"></p>
+
+<div id="adminPanel" class="hidden">
+<hr>
+<h2>لوحة تحكم الأدمن</h2>
+<h3>نشر خبر جديد</h3>
+<input id="newsTitle" placeholder="عنوان الخبر">
+<textarea id="newsContent"
+placeholder="اكتب تفاصيل الخبر هنا"></textarea>
+<button onclick="publishNews()">نشر الخبر</button>
+<p id="publishMessage"></p>
+</div>
+</section>
+
+</div>
+
+<footer>
+<p>مضيف أهل العباء © 2026</p>
+<p>جميع الحقوق محفوظة</p>
+</footer>
+
+<script>
+function register(){
+ document.getElementById('accountMessage').innerText=
+ 'يجب ربط الموقع بخادم لإنشاء الحسابات بشكل آمن.';
+}
+function login(){
+ document.getElementById('accountMessage').innerText=
+ 'يجب ربط الموقع بخادم لتسجيل الدخول.';
+}
+
+// التحقق من كلمة مرور الأدمن في الخادم
+async function adminLogin(){
+ const password=document.getElementById('adminPassword').value;
+ const message=document.getElementById('adminMessage');
+
+ try{
+  const response=await fetch('/api/admin/login',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({password})
+  });
+  if(response.ok){
+   document.getElementById('adminPanel').classList.remove('hidden');
+   message.innerText='تم تسجيل الدخول بنجاح';
+  }else{
+   message.innerText='كلمة المرور غير صحيحة';
+  }
+ }catch(e){
+  message.innerText='خدمة الإدارة تحتاج إلى تشغيل الخادم.';
+ }
+}
+
+// الأخبار في هذا المثال تحفظ محلياً للعرض التجريبي
+let news=JSON.parse(localStorage.getItem('news')||'[]');
+
+function showNews(){
+ const list=document.getElementById('newsList');
+ list.innerHTML='';
+ if(!news.length){
+  list.innerHTML='<p>لا توجد أخبار منشورة حالياً.</p>';
+  return;
+ }
+ news.forEach((item,index)=>{
+  list.innerHTML+=`
+   <div class="news">
+    <h3>${escapeHTML(item.title)}</h3>
+    <p>${escapeHTML(item.content)}</p>
+    <button onclick="deleteNews(${index})">حذف</button>
+   </div>`;
+ });
+}
+
+function escapeHTML(value){
+ const div=document.createElement('div');
+ div.textContent=value;
+ return div.innerHTML;
+}
+
+function publishNews(){
+ const title=document.getElementById('newsTitle').value.trim();
+ const content=document.getElementById('newsContent').value.trim();
+ if(!title||!content)return;
+ news.unshift({title,content});
+ localStorage.setItem('news',JSON.stringify(news));
+ document.getElementById('newsTitle').value='';
+ document.getElementById('newsContent').value='';
+ document.getElementById('publishMessage').innerText='تمت إضافة الخبر للعرض التجريبي';
+ showNews();
+}
+
+function deleteNews(index){
+ news.splice(index,1);
+ localStorage.setItem('news',JSON.stringify(news));
+ showNews();
+}
+showNews();
+</script>
+</body>
+</html>
