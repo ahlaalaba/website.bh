@@ -55,7 +55,6 @@
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-light { background: #e5e7eb; color: #111827; }
 
-    /* شاشة تسجيل الدخول */
     .login-wrapper {
       min-height: 80vh;
       display: flex;
@@ -107,7 +106,6 @@
       display: none;
     }
 
-    /* لوحة التحكم */
     .dashboard {
       display: none;
       max-width: 1200px;
@@ -151,7 +149,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 1rem;
+      gap: 1.2rem;
       flex-wrap: wrap;
     }
     .admin-news-item h4 {
@@ -178,7 +176,6 @@
     </div>
   </header>
 
-  <!-- قسم تسجيل الدخول (الرقم السري 2002) -->
   <section class="login-wrapper" id="loginSection">
     <div class="login-box">
       <h2>تسجيل دخول الأدمن</h2>
@@ -194,36 +191,28 @@
     </div>
   </section>
 
-  <!-- قسم لوحة التحكم بعد تسجيل الدخول -->
   <main class="dashboard" id="dashboardSection">
     <div class="grid-2">
-      
-      <!-- العمود الأيمن: كتابة خبر واستيراد من ملف -->
       <div>
-        <!-- استيراد خبر من ملف -->
         <div class="panel">
-          <h3>📂 رفع / تنزيل خبر من ملف</h3>
+          <h3>📂 استيراد خبر من ملف</h3>
           <div class="file-drop">
-            <p style="margin-bottom:0.6rem; font-weight:600;">اختر ملفاً نصياً (.txt) أو ملف بيانات (.json) لإضافة الخبر تلقائياً:</p>
+            <p style="margin-bottom:0.6rem; font-weight:600;">اختر ملفاً نصياً (.txt) أو ملف بيانات (.json) لنشره سحابياً:</p>
             <input type="file" id="importFileInput" accept=".txt,.json" />
             <small style="display:block; margin-top:0.5rem; color:#6b7280;">
-              ملاحظة للملف النصي (.txt): السطر الأول يُعتمد كعنوان للخبر، وبقية السطور كـ محتوى الخبر.
+              السطر الأول من الملف النصي يُعتمد كعنوان للخبر، والباقي كمحتوى.
             </small>
-          </div>
-          <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
-            <button type="button" class="btn btn-gold" onclick="exportAllNewsJSON()">💾 تصدير جميع الأخبار (نسخة احتياطية JSON)</button>
           </div>
         </div>
 
-        <!-- نموذج كتابة أو تعديل خبر -->
         <div class="panel">
-          <h3 id="formHeading">✍️ كتابة خبر جديد</h3>
+          <h3 id="formHeading">✍️ كتابة خبر جديد سحابياً</h3>
           <form id="newsForm">
             <input type="hidden" id="editNewsId" />
             
             <div class="form-group">
               <label for="newsTitle">عنوان الخبر *</label>
-              <input type="text" id="newsTitle" placeholder="مثال: إقامة مجلس عزاء في مضيف أهل العباء..." required />
+              <input type="text" id="newsTitle" placeholder="مثال: إقامة مجلس عزاء..." required />
             </div>
 
             <div class="form-group">
@@ -241,7 +230,7 @@
             </div>
 
             <div class="form-group">
-              <label for="newsImageFile">صورة الخبر (رفع من الجهاز - اختياري)</label>
+              <label for="newsImageFile">صورة الخبر (اختياري)</label>
               <input type="file" id="newsImageFile" accept="image/*" />
             </div>
 
@@ -251,24 +240,22 @@
             </div>
 
             <div style="display:flex; gap:0.7rem;">
-              <button type="submit" class="btn btn-primary" id="saveNewsBtn">نشر الخبر الآن</button>
+              <button type="submit" class="btn btn-primary" id="saveNewsBtn">نشر الخبر على سحابة Google</button>
               <button type="button" class="btn btn-light" id="cancelEditBtn" style="display:none;" onclick="resetNewsForm()">إلغاء التعديل</button>
             </div>
           </form>
         </div>
       </div>
 
-      <!-- العمود الأيسر: قائمة الأخبار المنشورة -->
       <div>
         <div class="panel">
-          <h3>📰 الأخبار المنشورة حالياً (<span id="newsCount">0</span>)</h3>
-          <div id="adminNewsList"></div>
+          <h3>📰 الأخبار المنشورة سحابياً (<span id="newsCount">0</span>)</h3>
+          <div id="adminNewsList">جاري جلب الأخبار...</div>
         </div>
       </div>
-
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
