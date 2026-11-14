@@ -38,7 +38,7 @@
       font-size: 1.7rem;
     }
     .btn {
-      padding: 0.6rem 1.2rem;
+      padding: 0.65rem 1.2rem;
       border-radius: 8px;
       border: none;
       font-family: inherit;
@@ -47,14 +47,18 @@
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
       font-size: 0.92rem;
+      transition: 0.2s;
     }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-gold { background: var(--gold); color: #08241b; }
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-light { background: #e5e7eb; color: #111827; }
 
+    /* شاشة تسجيل الدخول */
     .login-wrapper {
       min-height: 80vh;
       display: flex;
@@ -106,6 +110,7 @@
       display: none;
     }
 
+    /* لوحة التحكم */
     .dashboard {
       display: none;
       max-width: 1200px;
@@ -141,6 +146,12 @@
       text-align: center;
       margin-bottom: 1rem;
     }
+    .cloud-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.8rem;
+    }
     .admin-news-item {
       border: 1px solid var(--border);
       padding: 1rem;
@@ -149,7 +160,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 1.2rem;
+      gap: 1rem;
       flex-wrap: wrap;
     }
     .admin-news-item h4 {
@@ -176,6 +187,7 @@
     </div>
   </header>
 
+  <!-- شاشة تسجيل الدخول (الرقم السري 2002) -->
   <section class="login-wrapper" id="loginSection">
     <div class="login-box">
       <h2>تسجيل دخول الأدمن</h2>
@@ -191,28 +203,38 @@
     </div>
   </section>
 
+  <!-- لوحة التحكم السحابية -->
   <main class="dashboard" id="dashboardSection">
     <div class="grid-2">
+      
+      <!-- العمود الأيمن: إدارة الملفات وكتابة الأخبار -->
       <div>
+        <!-- قسم التعامل مع ملفات السحابة -->
         <div class="panel">
-          <h3>📂 استيراد خبر من ملف</h3>
+          <h3>☁️ إدارة ملفات السحابة (استيراد وتصدير)</h3>
           <div class="file-drop">
-            <p style="margin-bottom:0.6rem; font-weight:600;">اختر ملفاً نصياً (.txt) أو ملف بيانات (.json) لنشره سحابياً:</p>
+            <p style="margin-bottom:0.6rem; font-weight:600;">رفع خبر من ملف (.txt أو .json) ونشره على السحابة مباشرة:</p>
             <input type="file" id="importFileInput" accept=".txt,.json" />
             <small style="display:block; margin-top:0.5rem; color:#6b7280;">
-              السطر الأول من الملف النصي يُعتمد كعنوان للخبر، والباقي كمحتوى.
+              للملف النصي (.txt): السطر الأول هو العنوان، وبقية السطور هي تفاصيل الخبر.
             </small>
+          </div>
+          
+          <div class="cloud-actions">
+            <button type="button" class="btn btn-gold" onclick="exportCloudNewsJSON()">💾 تنزيل نسخة احتياطية من السحابة (JSON)</button>
+            <button type="button" class="btn btn-light" onclick="refreshCloudList()">🔄 تحديث القائمة</button>
           </div>
         </div>
 
+        <!-- نموذج كتابة أو تعديل خبر على السحابة -->
         <div class="panel">
-          <h3 id="formHeading">✍️ كتابة خبر جديد سحابياً</h3>
+          <h3 id="formHeading">✍️ كتابة خبر جديد ونشره على سحابة Google</h3>
           <form id="newsForm">
             <input type="hidden" id="editNewsId" />
             
             <div class="form-group">
               <label for="newsTitle">عنوان الخبر *</label>
-              <input type="text" id="newsTitle" placeholder="مثال: إقامة مجلس عزاء..." required />
+              <input type="text" id="newsTitle" placeholder="مثال: إقامة مجلس عزاء في مضيف أهل العباء..." required />
             </div>
 
             <div class="form-group">
@@ -230,7 +252,7 @@
             </div>
 
             <div class="form-group">
-              <label for="newsImageFile">صورة الخبر (اختياري)</label>
+              <label for="newsImageFile">صورة الخبر (رفع من الجهاز - اختياري)</label>
               <input type="file" id="newsImageFile" accept="image/*" />
             </div>
 
@@ -239,20 +261,22 @@
               <textarea id="newsContent" rows="6" placeholder="اكتب تفاصيل الخبر هنا..." required></textarea>
             </div>
 
-            <div style="display:flex; gap:0.7rem;">
-              <button type="submit" class="btn btn-primary" id="saveNewsBtn">نشر الخبر على سحابة Google</button>
+            <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
+              <button type="submit" class="btn btn-primary" id="saveNewsBtn">☁️ نشر الخبر على سحابة Google</button>
               <button type="button" class="btn btn-light" id="cancelEditBtn" style="display:none;" onclick="resetNewsForm()">إلغاء التعديل</button>
             </div>
           </form>
         </div>
       </div>
 
+      <!-- العمود الأيسر: قائمة الأخبار المحفوظة في السحابة -->
       <div>
         <div class="panel">
-          <h3>📰 الأخبار المنشورة سحابياً (<span id="newsCount">0</span>)</h3>
-          <div id="adminNewsList">جاري جلب الأخبار...</div>
+          <h3>📰 الأخبار المحفوظة في سحابة Google (<span id="newsCount">0</span>)</h3>
+          <div id="adminNewsList">جاري جلب الأخبار من السحابة...</div>
         </div>
       </div>
+
     </div>
   </main>
 
