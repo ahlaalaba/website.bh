@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة تحكم الإدارة | مضيف أهل العباء - البلاد القديم</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f3d2e;
+      --gold: #c89d3c;
+      --bg: #f4f2ed;
+      --card: #ffffff;
+      --border: #dcd6c8;
+      --danger: #b91c1c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg);
+      color: #1f2933;
+      line-height: 1.6;
+    }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 1.2rem 5%;
+      border-bottom: 4px solid var(--gold);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    header h1 {
+      font-family: 'Amiri', serif;
+      color: #e4bf6a;
+      font-size: 1.7rem;
+    }
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.92rem;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-gold { background: var(--gold); color: #08241b; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-light { background: #e5e7eb; color: #111827; }
+
+    /* شاشة تسجيل الدخول */
+    .login-wrapper {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .login-box {
+      background: var(--card);
+      padding: 2.5rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    .login-box h2 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .login-box p {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      margin-top: 0.35rem;
+    }
+    .form-group {
+      margin-bottom: 1.1rem;
+      text-align: right;
+    }
+    label {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #374151;
+    }
+    .error-msg {
+      color: var(--danger);
+      font-size: 0.88rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    /* لوحة التحكم */
+    .dashboard {
+      display: none;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 5%;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 850px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--card);
+      padding: 1.6rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .panel h3 {
+      color: var(--primary);
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+    .file-drop {
+      border: 2px dashed var(--gold);
+      background: #fdfbf6;
+      padding: 1.2rem;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .admin-news-item {
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .admin-news-item h4 {
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+    .admin-news-item small {
+      color: #6b7280;
+    }
+    .item-actions {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>لوحة إدارة مضيف أهل العباء - البلاد القديم</h1>
+    <div style="display:flex; gap:0.6rem;">
+      <a href="index.html" class="btn btn-gold">🌐 عرض الموقع</a>
+      <button id="logoutBtn" class="btn btn-danger" style="display:none;" onclick="logoutAdmin()">تسجيل خروج</button>
+    </div>
+  </header>
+
+  <!-- قسم تسجيل الدخول (الرقم السري 2002) -->
+  <section class="login-wrapper" id="loginSection">
+    <div class="login-box">
+      <h2>تسجيل دخول الأدمن</h2>
+      <p>يرجى إدخال الرقم السري الخاص بإدارة المضيف</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="adminPassword">الرقم السري:</label>
+          <input type="password" id="adminPassword" placeholder="أدخل الرقم السري..." required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">دخول لوحة التحكم</button>
+        <p class="error-msg" id="loginError">الرقم السري غير صحيح! حاول مرة أخرى.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- قسم لوحة التحكم بعد تسجيل الدخول -->
+  <main class="dashboard" id="dashboardSection">
+    <div class="grid-2">
+      
+      <!-- العمود الأيمن: كتابة خبر واستيراد من ملف -->
+      <div>
+        <!-- استيراد خبر من ملف -->
+        <div class="panel">
+          <h3>📂 رفع / تنزيل خبر من ملف</h3>
+          <div class="file-drop">
+            <p style="margin-bottom:0.6rem; font-weight:600;">اختر ملفاً نصياً (.txt) أو ملف بيانات (.json) لإضافة الخبر تلقائياً:</p>
+            <input type="file" id="importFileInput" accept=".txt,.json" />
+            <small style="display:block; margin-top:0.5rem; color:#6b7280;">
+              ملاحظة للملف النصي (.txt): السطر الأول يُعتمد كعنوان للخبر، وبقية السطور كـ محتوى الخبر.
+            </small>
+          </div>
+          <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+            <button type="button" class="btn btn-gold" onclick="exportAllNewsJSON()">💾 تصدير جميع الأخبار (نسخة احتياطية JSON)</button>
+          </div>
+        </div>
+
+        <!-- نموذج كتابة أو تعديل خبر -->
+        <div class="panel">
+          <h3 id="formHeading">✍️ كتابة خبر جديد</h3>
+          <form id="newsForm">
+            <input type="hidden" id="editNewsId" />
+            
+            <div class="form-group">
+              <label for="newsTitle">عنوان الخبر *</label>
+              <input type="text" id="newsTitle" placeholder="مثال: إقامة مجلس عزاء في مضيف أهل العباء..." required />
+            </div>
+
+            <div class="form-group">
+              <label for="newsCategory">التصنيف *</label>
+              <select id="newsCategory">
+                <option value="فعاليات ومناسبات">فعاليات ومناسبات</option>
+                <option value="إعلانات">إعلانات</option>
+                <option value="خدمات المضيف">خدمات المضيف</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="newsDate">تاريخ الخبر *</label>
+              <input type="date" id="newsDate" required />
+            </div>
+
+            <div class="form-group">
+              <label for="newsImageFile">صورة الخبر (رفع من الجهاز - اختياري)</label>
+              <input type="file" id="newsImageFile" accept="image/*" />
+            </div>
+
+            <div class="form-group">
+              <label for="newsContent">نص وتفاصيل الخبر *</label>
+              <textarea id="newsContent" rows="6" placeholder="اكتب تفاصيل الخبر هنا..." required></textarea>
+            </div>
+
+            <div style="display:flex; gap:0.7rem;">
+              <button type="submit" class="btn btn-primary" id="saveNewsBtn">نشر الخبر الآن</button>
+              <button type="button" class="btn btn-light" id="cancelEditBtn" style="display:none;" onclick="resetNewsForm()">إلغاء التعديل</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- العمود الأيسر: قائمة الأخبار المنشورة -->
+      <div>
+        <div class="panel">
+          <h3>📰 الأخبار المنشورة حالياً (<span id="newsCount">0</span>)</h3>
+          <div id="adminNewsList"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
