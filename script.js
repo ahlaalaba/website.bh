@@ -11,7 +11,7 @@ import {
   orderBy 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ⚠️ ضع هنا بيانات مشروعك من إعدادات Firebase Console
+// ⚠️ ضع هنا معلومات مشروعك الحقيقية من لوحة تحكم Firebase Console
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -28,7 +28,7 @@ const NEWS_COLLECTION = "news";
 const ADMIN_PASSCODE = "2002";
 const AUTH_KEY = "ahl_alaba_admin_logged_in";
 
-// جلب جميع الأخبار من سحابة Google
+// جلب جميع الأخبار من سحابة Google مع الترتيب التلقائي
 async function fetchNewsFromCloud() {
   try {
     const q = query(collection(db, NEWS_COLLECTION), orderBy("date", "desc"));
@@ -40,7 +40,6 @@ async function fetchNewsFromCloud() {
     return newsList;
   } catch (error) {
     console.error("خطأ في الاتصال بالسحابة:", error);
-    alert("تعذر الاتصال بسحابة Google! تأكد من إعدادات firebaseConfig وصلاحيات Firestore.");
     return [];
   }
 }
@@ -63,7 +62,7 @@ window.downloadSingleNewsTxt = async function(id) {
 };
 
 /* =========================================================
-   1. أكواد الصفحة الرئيسية (index.html)
+   1. أكواد الصفحة الرئيسية (index.html) - عرض أخبار السحابة
 ========================================================= */
 const publicNewsGrid = document.getElementById("publicNewsGrid");
 
@@ -73,6 +72,7 @@ if (publicNewsGrid) {
   let cachedNews = [];
 
   async function initPublicPage() {
+    publicNewsGrid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:2rem; color:#666;">⏳ جاري تحديث الأخبار من السحابة...</p>`;
     cachedNews = await fetchNewsFromCloud();
     renderPublicNews();
   }
@@ -151,7 +151,7 @@ if (publicNewsGrid) {
 }
 
 /* =========================================================
-   2. أكواد صفحة الإدارة (admin.html)
+   2. أكواد صفحة الإدارة (admin.html) - لوحة تحكم الأدمن
 ========================================================= */
 const loginForm = document.getElementById("loginForm");
 
@@ -176,6 +176,7 @@ if (loginForm) {
     }
   }
 
+  // تسجيل الدخول بالرقم السري 2002
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const enteredPass = document.getElementById("adminPassword").value.trim();
@@ -196,11 +197,12 @@ if (loginForm) {
 
   window.refreshCloudList = function() {
     renderAdminNewsList();
+    alert("تم تحديث القائمة من السحابة بنجاح!");
   };
 
   async function renderAdminNewsList() {
     const listContainer = document.getElementById("adminNewsList");
-    listContainer.innerHTML = "<p>جاري التزامن مع سحابة Google...</p>";
+    listContainer.innerHTML = "<p>⏳ جاري مزامنة الأخبار من السحابة...</p>";
     
     const news = await fetchNewsFromCloud();
     document.getElementById("newsCount").textContent = news.length;
@@ -225,7 +227,7 @@ if (loginForm) {
     `).join("");
   }
 
-  // زر نشر الخبر على سحابة Google
+  // الضغط على زر نشر الخبر (ارسال إلى سحابة Google فوراً لظهر للجميع)
   document.getElementById("newsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const saveBtn = document.getElementById("saveNewsBtn");
@@ -237,7 +239,7 @@ if (loginForm) {
     const fileInput = document.getElementById("newsImageFile");
 
     saveBtn.disabled = true;
-    saveBtn.textContent = "⏳ جاري الرفع للسحابة...";
+    saveBtn.textContent = "☁️ جاري الحفظ والنشر السحابي...";
 
     const saveDataToCloud = async (imageDataUrl) => {
       try {
@@ -246,7 +248,7 @@ if (loginForm) {
           const updateData = { title, category, date, content };
           if (imageDataUrl !== null) updateData.image = imageDataUrl;
           await updateDoc(docRef, updateData);
-          alert("تم تحديث الخبر بنجاح على سحابة Google!");
+          alert("✅ تم تعديل ونشر الخبر سحابياً بنجاح!");
         } else {
           await addDoc(collection(db, NEWS_COLLECTION), {
             title,
@@ -256,13 +258,13 @@ if (loginForm) {
             image: imageDataUrl || "",
             createdAt: Date.now()
           });
-          alert("تم نشر الخبر بنجاح على سحابة Google لجميع الأجهزة!");
+          alert("✅ تم نشر الخبر على سحابة Google وأصبح متاحاً فوراً لجميع الزوار على كافة الأجهزة!");
         }
         resetNewsForm();
         await renderAdminNewsList();
       } catch (err) {
-        console.error("خطأ الحفظ السحابي:", err);
-        alert("فشل النشر على السحابة! تأكد من إعدادات Firebase واتصالك بالإنترنت.");
+        console.error("خطأ النشر:", err);
+        alert("❌ فشل الاتصال بالسحابة! تحقق من إعدادات Firebase والإنترنت.");
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = "☁️ نشر الخبر على سحابة Google";
@@ -289,7 +291,7 @@ if (loginForm) {
     document.getElementById("newsDate").value = item.date;
     document.getElementById("newsContent").value = item.content;
 
-    document.getElementById("formHeading").textContent = "✏️ تعديل الخبر على السحابة";
+    document.getElementById("formHeading").textContent = "✏️ تعديل الخبر السحابي";
     document.getElementById("saveNewsBtn").textContent = "💾 حفظ التعديلات على السحابة";
     document.getElementById("cancelEditBtn").style.display = "inline-flex";
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -305,18 +307,18 @@ if (loginForm) {
   };
 
   window.deleteCloudNews = async function(id) {
-    if (!confirm("هل أنت متأكد من حذف هذا الخبر نهائياً من سحابة Google؟")) return;
+    if (!confirm("هل أنت متأكد من حذف هذا الخبر نهائياً من السحابة؟")) return;
     try {
       await deleteDoc(doc(db, NEWS_COLLECTION, id));
       await renderAdminNewsList();
-      alert("تم حذف الخبر من السحابة بنجاح.");
+      alert("🗑️ تم حذف الخبر بنجاح من جميع الأجهزة.");
     } catch (err) {
       console.error(err);
-      alert("فشل الحذف من السحابة.");
+      alert("❌ فشل الحذف من السحابة.");
     }
   };
 
-  // رفع ونشر خبر من ملف (.txt أو .json) إلى السحابة
+  // رفع خبر من ملف نصي (.txt) أو بيانات (.json) ونشره سحابياً تلقائياً
   document.getElementById("importFileInput").addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -342,7 +344,7 @@ if (loginForm) {
               });
             }
           }
-          alert(`تم رفع ${itemsToUpload.length} خبر من ملف JSON إلى السحابة بنجاح!`);
+          alert(`✅ تم استيراد ونشر ${itemsToUpload.length} خبر من ملف JSON إلى السحابة بنجاح!`);
         } else {
           const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
           if (lines.length === 0) {
@@ -360,19 +362,19 @@ if (loginForm) {
             image: "",
             createdAt: Date.now()
           });
-          alert("تم استيراد ونشر الخبر من الملف النصي إلى السحابة بنجاح!");
+          alert("✅ تم استيراد ونشر الخبر من الملف النصي على السحابة بنجاح!");
         }
         await renderAdminNewsList();
       } catch (err) {
         console.error(err);
-        alert("حدث خطأ أثناء رفع الملف إلى السحابة.");
+        alert("❌ حدث خطأ أثناء رفع الملف إلى السحابة.");
       }
       e.target.value = "";
     };
     reader.readAsText(file, "UTF-8");
   });
 
-  // تنزيل نسخة احتياطية كاملة من السحابة كملف JSON
+  // تنزيل نسخة احتياطية لجميع أخبار السحابة كملف JSON
   window.exportCloudNewsJSON = async function() {
     const allNews = await fetchNewsFromCloud();
     if (allNews.length === 0) {
@@ -386,7 +388,7 @@ if (loginForm) {
     
     const a = document.createElement("a");
     a.href = url;
-    a.download = `نسخة_سحابة_مضيف_أهل_العباء_${new Date().toISOString().split("T")[0]}.json`;
+    a.download = `أخبار_مضيف_أهل_العباء_${new Date().toISOString().split("T")[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
