@@ -28,7 +28,7 @@ const NEWS_COLLECTION = "news";
 const ADMIN_PASSCODE = "2002";
 const AUTH_KEY = "ahl_alaba_admin_logged_in";
 
-// جلب الأخبار من سحابة Google
+// جلب الأخبار من سحابة Google المتزامنة لجميع الأجهزة
 async function fetchNewsFromCloud() {
   try {
     const q = query(collection(db, NEWS_COLLECTION), orderBy("date", "desc"));
@@ -89,8 +89,8 @@ if (publicNewsGrid) {
       return;
     }
 
-    publicNewsGrid.innerHTML = filtered.map(item => `
-      <article class="news-card">
+    publicNewsGrid.innerHTML = filtered.map((item, index) => `
+      <article class="news-card" style="animation-delay: ${index * 0.08}s;">
         ${item.image ? `<img src="${item.image}" alt="${item.title}" class="news-img">` : ""}
         <div class="news-body">
           <div class="news-meta">
@@ -211,8 +211,8 @@ if (loginForm) {
       return;
     }
 
-    listContainer.innerHTML = news.map(item => `
-      <div class="admin-news-item">
+    listContainer.innerHTML = news.map((item, index) => `
+      <div class="admin-news-item" style="animation-delay: ${index * 0.05}s;">
         <div>
           <h4>${item.title}</h4>
           <small>${item.category} • ${item.date}</small>
@@ -226,7 +226,7 @@ if (loginForm) {
     `).join("");
   }
 
-  // نشر الخبر على سحابة Google لجميع الأجهزة
+  // نشر الخبر سحابياً وظهوره فوراً على جميع الأجهزة
   document.getElementById("newsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const saveBtn = document.getElementById("saveNewsBtn");
@@ -247,7 +247,7 @@ if (loginForm) {
           const updateData = { title, category, date, content };
           if (imageDataUrl !== null) updateData.image = imageDataUrl;
           await updateDoc(docRef, updateData);
-          alert("✅ تم تعديل ونشر الخبر سحابياً بنجاح!");
+          alert("✅ تم تعديل ونشر الخبر سحابياً بنجاح لتراه جميع الأجهزة!");
         } else {
           await addDoc(collection(db, NEWS_COLLECTION), {
             title,
@@ -263,7 +263,7 @@ if (loginForm) {
         await renderAdminNewsList();
       } catch (err) {
         console.error("خطأ النشر:", err);
-        alert("❌ فشل النشر على السحابة! تحقق من إعدادات Firebase واتصالك بالإنترنت.");
+        alert("❌ فشل النشر على السحابة! تحقق من إعدادات Firebase والإنترنت.");
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = "☁️ نشر الخبر على سحابة Google";
@@ -373,7 +373,6 @@ if (loginForm) {
     reader.readAsText(file, "UTF-8");
   });
 
-  // تصدير أخبار السحابة كملف احتياطي JSON
   window.exportCloudNewsJSON = async function() {
     const allNews = await fetchNewsFromCloud();
     if (allNews.length === 0) {
